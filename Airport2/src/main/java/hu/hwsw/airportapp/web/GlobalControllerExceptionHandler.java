@@ -12,6 +12,7 @@ import hu.hwsw.airportapp.web.dto.ErrorDTO;
 @ControllerAdvice
 public class GlobalControllerExceptionHandler {
 
+	//404-es hiba esetén átveszi az üzenetet és visszaadja azt a hívónak
 	@ExceptionHandler(NoSuchElementException.class)
 	ResponseEntity<ErrorDTO> handleNoSuchElementException(NoSuchElementException exception) {
 		ErrorDTO error = new ErrorDTO(404, exception.getMessage());

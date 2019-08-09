@@ -20,6 +20,7 @@ public interface FlightMapper {
 	//ez listát tud fogadni és úgy alakítja át
 	List<FlightDTO> flightsToDto(List<Flight> flight);
 	
+	//DTO-ból alakítunk át sima flight-ra 
 	void updateFromDto(NewFlightDTO dto, @MappingTarget Flight flight);
 
 	//ez visszaalakítja DTO-ból Flight-ra (csak egy példa)

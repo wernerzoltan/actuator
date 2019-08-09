@@ -27,13 +27,13 @@ import hu.hwsw.airportapp.web.dto.airport.AirportDTO;
 import hu.hwsw.airportapp.web.dto.airport.NewAirportDTO;
 
 @RestController
-@RequestMapping("/api/v1/airports")
+@RequestMapping("/api/v1/airports") //ezen az URL-en lehet elérni az adatokat
 public class AirportController {
 
 	private final AirportService airportService;
 	private final AirportRepository airportRepository;
 	
-	
+	//konstruktor (A konstruktor inicializálja az új objektumot.)
 	public AirportController(AirportService airportService, AirportRepository airportRepository) {
 		super();
 		this.airportService = airportService;
@@ -41,37 +41,43 @@ public class AirportController {
 	}
 
 
+	//aiportok lekérdezése (iata-val kérdezünk le, oldalakra osztva adjuk vissza (Pageable))
 	@GetMapping
 	List<AirportDTO> getAirports(@RequestParam(name = "iata", required = false) String iata, Pageable pageable) {
 		return airportService.getAirports(iata, pageable)
-				.stream()
-				.map(airport -> mapAirportToDto(airport))
-				.collect(Collectors.toList());
+				.stream() //összállítjuk a választ
+				.map(airport -> mapAirportToDto(airport)) //az airportból DTO-t mappelünk
+				.collect(Collectors.toList()); //LIST-be összetesszük az összes Airportot
 	}
 
-
+	//az airportból DTO-t mappelünk
 	private AirportDTO mapAirportToDto(Airport airport) {
 		return new AirportDTO(airport.getId(), airport.getCreatedAt(), airport.getModifiedAt(), airport.getName(), airport.getIata());
 	}
 
+	//Airportot hozunk létre, validáljuk a DTO-t, azaz nem lehet empty a két mező
 	@PostMapping
 	AirportDTO createAirport(@RequestBody @Valid NewAirportDTO newAirport) {
+		//az airportService-t hívjuk meg és átadjuk neki a NewAirportDTO-t
 		return mapAirportToDto(airportService.createAirport(newAirport));
 	}
 
+	//id alapjánkérjük le az Aiport-ot
 	@GetMapping("/{id}")
 	ResponseEntity<AirportDTO> getAirportById(@PathVariable Long id) {
-	    return ResponseEntity
-	    		.status(HttpStatus.OK)
-	    		.body(mapAirportToDto(airportService.getAirportById(id)));
+	    return ResponseEntity //HTTP státus kódot is visszaad
+	    		.status(HttpStatus.OK) //itt adjuk vissza a HTTP státuszt
+	    		.body(mapAirportToDto(airportService.getAirportById(id))); //itt adjuk vissza a törzset
 
 	}
 
+	//Airportot updatelünk
 	@PutMapping("/{id}")
 	AirportDTO updateAirport(@PathVariable Long id, @RequestBody @Valid NewAirportDTO newAirport) {
 		return AirportMapper.INSTANCE.airportToDto(airportService.updateAirport(id, newAirport));
 	}
 
+	//Airport törlése
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@DeleteMapping("/{id}")
 	public void deleteAirport(@PathVariable Long id) {

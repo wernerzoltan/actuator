@@ -5,6 +5,8 @@ import javax.validation.constraints.NotNull;
 
 import hu.hwsw.airportapp.web.dto.airport.NewAirportDTO;
 
+//a NewFlightDTO és NewAirportDTO-kat passzintja össze egy DTO-ba
+
 public class NewFlightWithNewAirportsDTO {
 
     @NotNull 

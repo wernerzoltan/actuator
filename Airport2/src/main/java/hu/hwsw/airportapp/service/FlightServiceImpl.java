@@ -24,22 +24,29 @@ public class FlightServiceImpl implements FlightService {
     
     private FlightRepository flightRepository;
 
+    //konstruktor
 	public FlightServiceImpl(AirportService airportService, FlightRepository flightRepository) {
 		this.airportService = airportService;
 		this.flightRepository = flightRepository;
 	}
 
     
+	//flight-ot hozunk létre aiportokkal együtt
 	@Override
 	@Transactional
 	public Flight createFlightWithAirports(NewFlightWithNewAirportsDTO newFlightWithNewAirportsDTO) {
 		
+		//fromAirport és toAirport értékeket átvesszük a DTO-ból
 		Airport fromAirport = airportService.createAirport(newFlightWithNewAirportsDTO.getFromAirport());
 		Airport toAirport = airportService.createAirport(newFlightWithNewAirportsDTO.getToAirport());
+		
+		//létrehozunk egy új flight-ot
 		Flight flight = new Flight();
+		//DTO értékeit átalakítjuk flight-ra és elmentjük az adatbázisban
 		FlightMapper.INSTANCE.updateFromDto(newFlightWithNewAirportsDTO.getNewFlight(), flight);
 		flight = flightRepository.save(flight);
 		
+		//a flight 2 mező értékét beállítjuk
 		flight.setFromAirport(fromAirport);
 		flight.setToAirport(toAirport);
 		
@@ -47,42 +54,50 @@ public class FlightServiceImpl implements FlightService {
 	}
 
 
+	//flight-ot hozunk létre, de jelenleg nincs kidolgozva
 	@Override
     public Flight createFlight(@Valid NewFlightDTO newFlight) {
     	return null;
     }
 
 
-    @Override
+    //jelenleg nincs kidolgozva
+	@Override
     public List<Flight> getArrivingFlightsByAirportId(Long airportId) {
     	return null;
     }
 
-    @Override
+    //jelenleg nincs kidolgozva
+	@Override
     public List<Flight> getDepartingFlightsByAirportId(Long airportId) {
     	return null;
     }
 
-    @Override
+    //visszaadja a flight-okat
+	@Override
     public List<Flight> getFlights() {
         return flightRepository.findAll();
     }
 
-    @Override
+	//jelenleg nincs kidolgozva
+	@Override
     public Flight getFlightById(Long id) {
         return null;
     }
 
-    @Override
+    //jelenleg nincs kidolgozva
+	@Override
     public Flight updateFlightById(Long id, NewFlightDTO newFlight) {
     	 return null;
     }
 
-    @Override
+    //jelenleg nincs kidolgozva
+	@Override
     public void deleteFlightById(Long id) {
     }
 
 
+	//visszaadja a specifikációban rögzített elvek szerinti (+-1 óra, stb.) flight-okat
 	@Override
 	public List<Flight> searchFlights(Flight flight) {
 		return flightRepository.findAll(new FlightSpecification(flight));
